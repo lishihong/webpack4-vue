@@ -1,11 +1,10 @@
 import axios from 'axios';
 import urls from '../constants/url';
 import router from '../router'
-import {getToken} from '../services/token'
+import {getToken} from './user'
 import {Loading,Message} from 'element-ui';
  
-axios.defaults.timeout = 5000; //响应超时时间          
-//axios.defaults.withCredentials = true          
+axios.defaults.timeout = 10000; //响应超时时间          
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=utf-8'; //配置请求头
 const isDev = process.env.NODE_ENV === 'development';
 if(isDev) {
@@ -31,24 +30,24 @@ axios.interceptors.request.use(
  
 //添加响应拦截器
 axios.interceptors.response.use((res) =>{
-    if(res.data.result_code === 10003 || res.data.result_code === 10002 || res.data.result_code === 10000) { 
+    return Promise.resolve(res);
+}, (error) => {
+    if(error.response && error.response.data.result_code != 200) {
+        //提示msg
+        Message({message:error.response.data.result_msg,duration:2000,center:true,type:"warning"})
+    }
+    if(error.response && (error.response.data.result_code === 10003 || error.response.data.result_code === 10002)) { 
         router.push({
             path:"/login",
             query:{redirect:router.currentRoute.fullPath}//从哪个页面跳转
         })
-    }else if(res.data.result_code !== 200) {
-        //提示msg
-        Message({message:res.data.result_msg,duration:2000,center:true});
-    }else{
-        return Promise.resolve(res);
     }
-}, (error) => {
     return Promise.reject(error);
 });
  
 function dealRequest(url,params,funName,isLoading) {
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         //显示loading
         let loading;
         if(isLoading) {
@@ -61,15 +60,21 @@ function dealRequest(url,params,funName,isLoading) {
         }
         axios[funName](url, params)
             .then(response => {
-                loading.close();
-                resolve(response);
+                if(isLoading) {
+                    loading.close();
+                }
+                resolve(response.data);
             },err=>{
-                loading.close();
-                reject(err);
+                if(isLoading) {
+                    loading.close();
+                }
+                Message({message:`${err.message}`,duration:2000,center:true,type:"warning"})
             })
-            .catch((error) => {
-                loading.close();
-                reject(error)
+            .catch((err) => {
+                if(isLoading) {
+                    loading.close();
+                }
+                Message({message:`${err.message}`,duration:2000,center:true,type:"warning"})
             })
     })
 }

@@ -59,22 +59,23 @@
     "vue-loader": "^15.7.0",
     "vue-style-loader": "^4.1.2",
     "vue-template-compiler": "^2.6.10",
-    "vxe-table": "0.0.12",
     "webpack": "^4.30.0",
     "webpack-cli": "^3.3.1",
     "webpack-dev-server": "^3.3.1"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.19.0",
     "canvas-nest.js": "^2.0.4",
     "echarts": "^4.2.1",
     "element-ui": "^2.8.2",
     "faker": "^4.1.0",
     "jshint": "^2.10.2",
+    "loadsh": "0.0.4",
     "nprogress": "^0.2.0",
     "uglifyjs-webpack-plugin": "^2.1.2",
     "vue": "^2.6.10",
     "vue-router": "^3.0.6",
-    "xe-utils": "^1.8.20"
+    "vxe-table": "^1.0.0-beta.14",
+    "xe-utils": "^1.8.22"
   }
 }

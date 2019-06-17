@@ -16,9 +16,10 @@ const postCssPlugin = require("autoprefixer")({browsers: [ "> 1%",
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
-    entry: ['./src/main.js'], //入口文件，src下的index.js
+    entry: ['./src/main.js'], //入口文件，src下的main.js
     output: {
         path: path.join(__dirname, 'dist'), // 出口目录，dist文件
+        publicPath: '/',// 表示在引入静态资源时，从根路径开始引入,否则路由多层时候资源找不到
         filename: 'js/[name].[hash].js', //这里name就是打包出来的文件名
         chunkFilename: 'js/[name].js',//指定动态生成的Chunk在输出时的文件名称
     }, 
@@ -132,17 +133,17 @@ module.exports = {
     devServer: {
         contentBase: path.join(__dirname, "dist"), //打包输出文件根目录
         port: 8080, // 端口
-        host: 'localhost',
+        host: '0.0.0.0',
         historyApiFallback: true,//history 模式路由刷新 404 
         compress: true,
+        disableHostCheck: true,
         watchOptions: {
             ignored: /node_modules/, //忽略不用监听变更的目录
-            aggregateTimeout: 1000, //防止重复保存频繁重新编译,n毫米内重复保存不打包
-            poll:1000 //每秒询问的文件变更的次数
+            aggregateTimeout: 300, //防止重复保存频繁重新编译,n毫米内重复保存不打包
         },
         proxy: {
             "/api": {
-                "target": "http://10.8.4.62:5000",
+                "target": "http://10.8.4.101:5000",
                 "changeOrigin": true,
                 "pathRewrite": {"^/api": "/api"}
             }
@@ -174,7 +175,9 @@ module.exports = {
     resolve: {
         extensions: ['.js', '.jsx','.ts','.tsx', '.less','.json','.css','.vue'],
         alias: {
-            //views :path.resolve(__dirname, './src/views'),
+            '@': path.join(__dirname, 'src'),
+            '@views': path.join(__dirname, 'src','views'), // ../views
+            '@components': path.join(__dirname, 'src/components'),// ../../components or ../components,
         },
         modules: ['node_modules'],
     },

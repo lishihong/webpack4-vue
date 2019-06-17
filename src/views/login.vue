@@ -1,13 +1,22 @@
 <template>
   <div class="login">
-    <div style="height:40vh;" />
+    <div style="height:34vh;" />
+    <div class="title">
+      多因子分析
+    </div>
     <div>
       <label>用户名</label>
-      <input v-model="username">
+      <input
+        v-model="username"
+        placeholder="请输入用户名"
+      >
     </div>
     <div style="margin-top:20px;">
       <label>密&nbsp;&nbsp;&nbsp;码</label>
-      <input v-model="password">
+      <input
+        v-model="password"
+        placeholder="请输入密码"
+      >
     </div>
     <el-button
       type="primary"
@@ -21,7 +30,7 @@
 
 <script>
 import CanvasNest from 'canvas-nest.js';
-import {setToken} from '../services/token'
+import {setUser} from '../services/user'
 export default {
     data() {
         return {
@@ -54,10 +63,10 @@ export default {
     },
     methods: {
         login() {
-            this.username = "111@126.com"
-            this.password = "567890"
+            this.username = "analysis"
+            this.password = "000000"
             this.requestUtil.post(this.urls.login.url,{username:this.username,password:this.password}).then((res)=>{
-                setToken(res.data);
+                setUser(res.data);
                 this.router.push({
                     path:"/home"
                 })
@@ -66,8 +75,8 @@ export default {
     },
 }
 </script>
-<style lang="less">
-.login{
+<style scoped lang="less">
+.login{ 
   height: 100vh;
   text-align: center;
   input{
@@ -75,6 +84,17 @@ export default {
     width:240px;
     margin-left:10px;
     line-height: 30px;
+  }
+  label{
+    font-size:16px;
+  }
+  .title{
+    margin-bottom: 6vh;
+    font-size:24px;
+    color:#111;
+  }
+  i{
+    font-size:24px;
   }
 }
  

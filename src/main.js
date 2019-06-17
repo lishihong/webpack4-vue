@@ -1,8 +1,11 @@
 import Vue from 'vue'
-import App from './App.vue'
+import App from './app.vue'
 import router from './router'
 import './assets/less/theme.less'
-import './services/element-use'
+import './directives/directive'
+import './filters/filter'
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
 import urls from './constants/url'
 import requestUtil from './services/request'
 import 'echarts'
@@ -12,28 +15,31 @@ import 'vxe-table/lib/index.css'
 import './assets/css/style'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
-import {getToken} from './services/token'
+import {getUser} from './services/user'
+import _ from 'lodash'
+Vue.prototype._ = _
+Vue.prototype.$filters = Vue.options.filters
 
+Vue.use(ElementUI);
 
 Vue.use(VXETable, {
     size: 'mini',
     contextMenu: null,
-    optimized: {
-        scrollX: {
-            gt: 300,
-            oSize: 20,
-            rSize: 50
-        },
+    optimization: {
+        animat:false,
         scrollY: {
             gt: 100,
-            oSize: 30,
-            rSize: 100,
+            oSize: 40,
+            rSize: 80
         },
-        animate:false,
-        overflow:"tooltip",
+        scrollX: {
+            gt: 100,
+            oSize: 20,
+            rSize: 40,
+        },
     },
     fit:false,
-})
+}) 
 NProgress.configure({showSpinner: false})
 
 Vue.component('v-chart', VueECharts)
@@ -50,7 +56,8 @@ const baseTitle = '多因子分析工具'
 router.beforeEach((to, from, next)=> {
     NProgress.start()
     document.title = `${baseTitle}-${to.meta.title}`;
-    const hasToken = getToken()
+    const hasToken = getUser();
+    Vue.prototype.isLogin = !!hasToken;
     if (hasToken) {
         if (to.path === '/login') {
             next({path: '/'})
@@ -75,5 +82,8 @@ router.afterEach(() => {
 
 new Vue({
     router,
-    render: h => h(App)
+    data: {
+        eventHub: new Vue()
+    },
+    render: h => h(App),
 }).$mount('#app')

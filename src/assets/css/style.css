@@ -1,3 +1,18 @@
-body{
-    margin:0;
+body {
+    margin: 0;
+}
+
+.factor-btn-step {
+    width: 100px;
+    height: 32px;
+    background: rgba(51, 123, 247, 1);
+    border-radius: 2px;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.view-content {
+    overflow: hidden auto;
+    max-height: calc(100vh - 270px);
 }
